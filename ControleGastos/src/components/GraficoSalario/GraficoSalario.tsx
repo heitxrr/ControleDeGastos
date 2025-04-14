@@ -14,9 +14,9 @@ export default function GraficoSalario({ salario, totalGastos }: Props) {
   ];
 
   return (
-    <div className="bg-white shadow-md rounded-xl p-4 mt-6">
+    <div className="bg-white rounded-xl p-4 mt-6">
       <h2 className="text-lg font-semibold mb-4">Salário vs Gastos</h2>
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="101%" height={300}>
         <BarChart data={dados}>
           <XAxis dataKey="nome" />
           <YAxis />

@@ -19,9 +19,9 @@ export default function GraficoGastos({ gastos }: Props) {
   );
 
   return (
-    <div className="bg-white shadow-md rounded-xl p-4">
+    <div className="bg-white rounded-xl p-4">
       <h2 className="text-lg font-semibold mb-4">Gastos por Categoria</h2>
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="101%" height={300}>
         <PieChart>
           <Pie dataKey="value" data={dados} cx="50%" cy="50%" outerRadius={90} label>
             {dados.map((_, index) => (
