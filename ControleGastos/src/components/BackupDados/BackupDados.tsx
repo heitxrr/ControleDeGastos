@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+//  import { useRef } from 'react';
 
 interface BackupDadosProps {
   onDadosImportados: () => void;
@@ -8,18 +8,12 @@ interface BackupDadosProps {
 
 const API_URL = "http://localhost:3001";
 
-
-
 export default function BackupDados({ onDadosImportados }: BackupDadosProps) {
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  //const inputRef = useRef<HTMLInputElement | null>(null);
 
   const exportarDados = async () => {
     try {
-      const response = await fetch(`${API_URL}/gastos`, {
-        method: "POST",
-        body: JSON.stringify({ data: '01-01-2025', valor:0, descricao: "a" }),
-        headers: { "Content-Type": "application/json" },
-      });
+      const response = await fetch(`${API_URL}/gastos`);
       const gastos = await response.json();
 
       const salarioResponse = await fetch(`${API_URL}/salario`);
@@ -46,39 +40,23 @@ export default function BackupDados({ onDadosImportados }: BackupDadosProps) {
     }
   };
 
-  const importarDados = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+  const importarDadosDiretoDoBanco = async () => {
+    try {
+      const responseGastos = await fetch(`${API_URL}/gastos`);
+      const gastos = await responseGastos.json();
 
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      try {
-        const resultado = JSON.parse(e.target?.result as string);
+      const responseSalario = await fetch(`${API_URL}/salario`);
+      const salario = await responseSalario.json();
 
-        if (resultado.salario) {
-          await fetch(`${API_URL}/salario`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ salario: resultado.salario }),
-          });
-        }
+      console.log('Gastos importados:', gastos);
+      console.log('Salário importado:', salario);
 
-        if (resultado.gastos) {
-          await fetch(`${API_URL}/gastos/importar`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ gastos: resultado.gastos }),
-          });
-        }
-
-        alert('Dados importados com sucesso!');
-        onDadosImportados();
-      } catch (err) {
-        alert('Erro ao importar os dados. Verifique o arquivo.');
-        console.error(err);
-      }
-    };
-    reader.readAsText(file);
+      alert('Dados importados com sucesso!');
+      onDadosImportados();
+    } catch (error) {
+      alert('Erro ao importar dados do banco.');
+      console.error(error);
+    }
   };
 
   const limparDados = async () => {
@@ -106,16 +84,12 @@ export default function BackupDados({ onDadosImportados }: BackupDadosProps) {
           Exportar Dados
         </button>
 
-        <label className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded cursor-pointer transition">
-          Importar Dados
-          <input
-            type="file"
-            accept=".json"
-            onChange={importarDados}
-            ref={inputRef}
-            className="hidden"
-          />
-        </label>
+        <button
+          onClick={importarDadosDiretoDoBanco}
+          className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded transition"
+        >
+          Importar Dados do Banco
+        </button>
 
         <button
           onClick={limparDados}
